@@ -1,5 +1,5 @@
 {
-    "name": "jms/aop-bundle",
+    "name": "fishly/aop-bundle",
     "description": "Adds AOP capabilities to Symfony2",
     "keywords": ["annotations","aop"],
     "type": "symfony-bundle",

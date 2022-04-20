@@ -223,16 +223,20 @@ class PointcutMatchingPass implements CompilerPassInterface
             return $this->pointcuts;
         }
 
-        $pointcuts = $pointcutReferences = array();
+        $pointcuts = $pointcutReferences = $priorities = array();
 
         foreach ($this->container->findTaggedServiceIds('jms_aop.pointcut') as $id => $attr) {
+            $priority = $attr[0]['priority'] ?? 0;
+
             if (!isset($attr[0]['interceptor'])) {
                 throw new RuntimeException('You need to set the "interceptor" attribute for the "jms_aop.pointcut" tag of service "'.$id.'".');
             }
 
             $pointcutReferences[$attr[0]['interceptor']] = new Reference($id);
-            $pointcuts[$attr[0]['interceptor']] = $this->container->get($id);
+            $pointcuts[$attr[0]['interceptor']] =  $this->container->get($id) ;
+            $priorities[$attr[0]['interceptor']] = $priority;
         }
+        array_multisort($priorities, SORT_ASC,$pointcuts, $pointcutReferences);
 
         $this->container
             ->getDefinition('jms_aop.pointcut_container')
